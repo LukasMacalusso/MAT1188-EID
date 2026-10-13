@@ -1,0 +1,18 @@
+[project]
+name = "mat1188-eid"
+version = "0.1.0"
+description = "Proyecto Manim para Calculo Intermedio - Teorema Fundamental del Calculo"
+readme = "README.md"
+authors = [
+    { name = "Lukas Trillat", email = "lstrillat@gmail.com" },
+    { name = "Ignacio Loncon", email = "iloncon2025@alu.uct.cl" },
+    { name = "Nicolas Cayuman", email = "ncayuman2025@alu.uct.cl" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "manim>=0.18.0",
+    "numpy>=1.24.0",
+]
+
+[tool.uv]
+package = false
