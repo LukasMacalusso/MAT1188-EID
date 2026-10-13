@@ -32,6 +32,44 @@
 
 ---
 
+## Instalación y Configuración Inicial
+
+### 1. Dependencias del Sistema
+
+Antes de ejecutar las animaciones, asegúrate de tener instalados **FFmpeg** y un entorno **LaTeX** compatible con `dvisvgm`:
+
+- **Debian / Ubuntu / Pop!_OS:**
+  ```bash
+  sudo apt update
+  sudo apt install ffmpeg texlive texlive-latex-extra texlive-fonts-extra texlive-science dvisvgm
+  ```
+
+- **Arch Linux:**
+  ```bash
+  sudo pacman -S ffmpeg texlive-basic texlive-latexextra texlive-fontsrecommended
+  ```
+
+### 2. Instalación de `uv` (si no lo tienes instalado)
+
+```bash
+# En Linux:
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+### 3. Sincronización del Entorno y Dependencias
+
+Clona el repositorio e instala las dependencias de Python (`manim`, `numpy`) sincronizando el entorno virtual:
+
+```bash
+# Clonar y entrar al proyecto
+cd MAT1188-EID
+
+# Crear entorno virtual e instalar dependencias automáticamente
+uv sync
+```
+
+---
+
 ## Comandos de Ejecución y Renderizado
 
 El script `main.py` permite orquestar de forma sencilla todo el ciclo de renderizado:
