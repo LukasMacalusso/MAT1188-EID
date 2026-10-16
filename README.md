@@ -7,60 +7,98 @@
 
 ## Contenido del Repositorio
 
-- [Documentacion_matematica.md]: Documento principal con el desarrollo matemático paso a paso (desde las sumas de Riemann hasta la deducción de Barrow), el ejemplo con $f(x)=3x^2$ y las especificaciones técnicas de cada escena para Manim.
-- `pyproject.toml`: Configuracion, metadata y dependencias del proyecto.
-- `main.py`: Punto de entrada principal para orquestar la renderización de las escenas del proyecto.
-- `src/common/`: Estructura para estilos y definiciones matemáticas compartidas.
-- `src/scenes/`: Directorio modular donde residen los scripts de animación en Python.
+- `Documentacion_matematica.md`: Fundamentación matemática rigurosa, deducción paso a paso de la Regla de Barrow a partir de la función de acumulación $G(x')$, justificación de la cancelación de la constante $C$ y especificaciones técnicas de animación.
+- `pyproject.toml`: Configuración, metadatos y dependencias gestionadas mediante `uv`.
+- `main.py`: CLI orquestador integral para renderizar escenas individuales, compilar todas las escenas y ensamblar el video final unificado (`ffmpeg`).
+- `src/common/`: 
+  - `style.py`: Paleta cromática estandarizada, tamaños tipográficos y funciones auxiliares de diseño.
+  - `math_defs.py`: Definiciones analíticas de $f(x)=3x^2$, primitiva $F(x)=x^3$, función de acumulación $G(x')$ y sumas de Riemann.
+- `src/scenes/`: Código modular de las 5 escenas de animación en Manim Community:
+  1. `scene1_riemann_motivation.py`: Motivación geométrica y refinamiento de sumas de Riemann ($n=4 \to 8 \to 32$).
+  2. `scene2_accumulation_tfc1.py`: Función de acumulación $G(x')$, franja diferencial $\Delta x$ y deducción de $\frac{dG}{dx'} = f(x')$.
+  3. `scene3_antiderivative_theory.py`: Definición formal de antiderivada, rol de la constante $C$ y familia de primitivas $F(x') = G(x') + C$.
+  4. `scene4_barrow_deduction.py`: Deducción analítica de Barrow evaluando en $a$ y $b$, cancelación algebraica de $C$ y respuesta explícita a la pregunta central.
+  5. `scene5_example_calculation.py`: Ejemplo resuelto con $f(x) = 3x^2$ en $[1, 2]$, área $= 7$, verificación de invariancia ante $C$ y síntesis.
 
 ---
 
-## Requisitos Previos 
+## Requisitos y Entorno de Ejecución
 
-- **uv** Requerido para ejecutar comodamente el proyecto modularizado, dentro de su entorno virtual adecuado.
-- **Python:** 3.10 o superior.
-- **FFmpeg:** Requerido por Manim para codificar y renderizar los archivos de video MP4.
-- **LaTeX / MiKTeX (Opcional):** Si se desea renderizado tipográfico nativo de fórmulas matemáticas complejas.
+- **uv:** Gestor de paquetes y entornos de Python ultrarrápido.
+- **Python:** 3.10 o superior (el entorno virtual gestionado por `uv` utiliza CPython 3.13 / 3.14).
+- **Manim Community:** Versión 0.18.0 o superior (instalado Manim CE 0.22.0).
+- **FFmpeg:** Requerido para la codificación y ensamblado final de los videos MP4.
+- **LaTeX / TinyTeX:** Motor tipográfico con soporte de `amsmath`, `mathtools` y `dvisvgm` para el renderizado vectorial de fórmulas matemáticas.
 
 ---
 
-## Estructura de Escenas y Ejecución
+## Instalación y Configuración Inicial
 
-Las animaciones se organizan de manera modular siguiendo los 5 pasos del proyecto:
+### 1. Dependencias del Sistema
 
-1. `scene1_riemann_motivation.py` (`Scene1RiemannMotivation`): Motivación mostrando sumas de Riemann ($n=4 \to n=32$) y la necesidad de un método exacto.
-2. `scene2_accumulation_tfc1.py` (`Scene2AccumulationTFC1`): Función de acumulación $G(x')$, franja diferencial $\Delta x$ y deducción directa de $\frac{dG}{dx'} = f(x')$.
-3. `scene3_antiderivative_theory.py` (`Scene3AntiderivativeTheory`): Definición de antiderivada y familia infinita de primitivas ($F(x') = G(x') + C$).
-4. `scene4_barrow_deduction.py` (`Scene4BarrowDeduction`): Deducción analítica de la Regla de Barrow evaluando en $a$ y $b$ con cancelación de $C$.
-5. `scene5_example_calculation.py` (`Scene5ExampleCalculation`): Ejemplo práctico con $f(x) = 3x^2$ en $[1, 2]$ y área $= 7$.
+Antes de ejecutar las animaciones, asegúrate de tener instalados **FFmpeg** y un entorno **LaTeX** compatible con `dvisvgm`:
 
-### Comandos de Renderizado con `uv`
-
-`uv run` ejecuta los comandos automáticamente dentro del entorno virtual del proyecto sin necesidad de activarlo manualmente:
-
-
-- **Ejecución vía script principal:**
+- **Debian / Ubuntu / Pop!_OS:**
   ```bash
-  uv run python main.py
+  sudo apt update
+  sudo apt install ffmpeg texlive texlive-latex-extra texlive-fonts-extra texlive-science dvisvgm
   ```
 
-- **Previsualización rápida en baja resolución (480p, 15fps):**
+- **Arch Linux:**
   ```bash
-  uv run manim -pql src/scenes/scene1_riemann_motivation.py Scene1RiemannMotivation
+  sudo pacman -S ffmpeg texlive-basic texlive-latexextra texlive-fontsrecommended
   ```
 
-- **Renderizado en calidad media (720p, 30fps):**
-  ```bash
-  uv run manim -pqm src/scenes/scene2_accumulation_tfc1.py Scene2AccumulationTFC1
-  ```
+### 2. Instalación de `uv` (si no lo tienes instalado)
 
-- **Renderizado final en alta calidad (1080p, 60fps):**
-  ```bash
-  uv run manim -pqh src/scenes/scene5_example_calculation.py Scene5ExampleCalculation
-  ```
+```bash
+# En Linux:
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
 
+### 3. Sincronización del Entorno y Dependencias
 
+Clona el repositorio e instala las dependencias de Python (`manim`, `numpy`) sincronizando el entorno virtual:
 
+```bash
+# Clonar y entrar al proyecto
+cd MAT1188-EID
+
+# Crear entorno virtual e instalar dependencias automáticamente
+uv sync
+```
+
+---
+
+## Comandos de Ejecución y Renderizado
+
+El script `main.py` permite orquestar de forma sencilla todo el ciclo de renderizado:
+
+### 1. Renderizado individual de escenas
+```bash
+# Renderizar escena específica en calidad media (720p, 30fps por defecto)
+uv run python main.py --scene 1
+uv run python main.py --scene 4
+
+# Renderizar en baja resolución para previsualización rápida (480p, 15fps)
+uv run python main.py --scene 2 -q low
+
+# Renderizar en alta definición (1080p, 60fps)
+uv run python main.py --scene 5 -q high
+```
+
+### 2. Renderizado de todas las escenas en lote
+```bash
+# Renderiza secuencialmente las 5 escenas del proyecto en 720p
+uv run python main.py --all -q med
+```
+
+### 3. Compilación del video final unificado
+```bash
+# Concatena automáticamente los 5 clips generados en un único archivo MP4
+uv run python main.py --merge -q med
+```
+El archivo resultante se generará en la raíz del proyecto como `MAT1188_Grupo9_EID_Completo_med.mp4`.
 
 ---
 
@@ -68,14 +106,15 @@ Las animaciones se organizan de manera modular siguiendo los 5 pasos del proyect
 
 1. **Documentación Oficial de Manim Community:** [https://docs.manim.community/](https://docs.manim.community/)
 2. **Apunte de Cátedra MAT1188:** *Introducción a la integral – Apunte base común*, Facultad de Ingeniería.
-3. BlueDot. (2023, 23 de enero). Este TEOREMA lo CAMBIO TODO 🚀| ¿QUÉ es LA INTEGRAL? ▶ El FAMOSO NEXO entre DERIVADAS e INTEGRALES ⌚ [Video]. YouTube. https://www.youtube.com/watch?v=y6YQSUDTzqE
-4. 3Blue1Brown. (2017, 5 de mayo). Integration and the fundamental theorem of calculus | Chapter 8, Essence of calculus [Video]. YouTube. https://www.youtube.com/watch?v=rfG8ce4nNh0
-
+3. **Stewart, J.** (2012). *Cálculo de una variable: Trascendentes tempranas* (7.ª ed.). Cengage Learning. (Capítulo 5: Integrales y Teorema Fundamental del Cálculo).
+4. **Thomas, G. B., Weir, M. D., & Hass, J.** (2010). *Cálculo: Una variable* (12.ª ed.). Pearson Educación.
+5. **BlueDot.** (2023, 23 de enero). *Este TEOREMA lo CAMBIO TODO 🚀| ¿QUÉ es LA INTEGRAL? ▶ El FAMOSO NEXO entre DERIVADAS e INTEGRALES* [Video]. YouTube. https://www.youtube.com/watch?v=y6YQSUDTzqE
+6. **3Blue1Brown.** (2017, 5 de mayo). *Integration and the fundamental theorem of calculus | Chapter 8, Essence of calculus* [Video]. YouTube. https://www.youtube.com/watch?v=rfG8ce4nNh0
 
 ---
 
 ## Declaración de Uso de Inteligencia Artificial
 
-- **Herramienta:** Antigravity (modelo Gemini 3.8 Flash).
-- **Finalidad:** Redacción de documentación (citación en APA, formulas en LaTex), estructuración inicial de parametros guía para implementar las animaciones en manim.
-- **Verificación:** Todos los pasos algebraicos, fórmulas de derivación/integración y resultados numéricos fueron comprobados a mano por los integrantes del equipo.
+- **Herramienta:** Asistente IA Antigravity (Google DeepMind, Gemini 3.8 Flash).
+- **Finalidad:** Apoyo en la estructura del código modular de Manim Community, redacción de documentación y formato en LaTeX / APA.
+- **Verificación Humana:** Todos los desarrollos algebraicos, deducciones del Teorema Fundamental del Cálculo, cálculo de áreas e integrales, y relaciones de invariancia ante la constante $C$ fueron verificados y calculados a mano por los integrantes del equipo.
