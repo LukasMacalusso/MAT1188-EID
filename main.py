@@ -41,20 +41,20 @@ def render_scene(key: str, quality: str = "med", preview: bool = False) -> bool:
         cmd.append("-p")
     cmd.extend([str(script_path), class_name])
 
-    print(f"\n🎬 Renderizando: {description}")
-    print(f"   Clase: {class_name} | Calidad: {quality} ({q_flag})\n")
+    print(f"\n[INFO] Renderizando: {description}")
+    print(f"       Clase: {class_name} | Calidad: {quality} ({q_flag})\n")
 
     env = {**os.environ, "PYTHONPATH": str(PROJECT_ROOT)}
     result = subprocess.run(cmd, cwd=str(PROJECT_ROOT), env=env)
     return result.returncode == 0
 
 def render_all(quality: str = "med") -> bool:
-    print(f"\n🚀 Iniciando renderizado secuencial (calidad: {quality})...")
+    print(f"\n[INFO] Iniciando renderizado secuencial (calidad: {quality})...")
     for key in sorted(SCENE_MAP.keys()):
         if not render_scene(key, quality=quality, preview=False):
-            print(f"[ALERTA] Falló el renderizado de la escena {key}.")
+            print(f"[ERROR] Falló el renderizado de la escena {key}.")
             return False
-    print("\n✅ ¡Todas las escenas fueron renderizadas exitosamente!")
+    print("\n[OK] Todas las escenas fueron renderizadas correctamente.")
     return True
 
 def merge_scenes(quality: str = "med") -> None:
@@ -77,7 +77,7 @@ def merge_scenes(quality: str = "med") -> None:
     concat_file.write_text("\n".join(f"file '{v.resolve()}'" for v in video_files) + "\n")
 
     output_file = PROJECT_ROOT / f"MAT1188_Grupo9_EID_Completo_{quality}.mp4"
-    print(f"\n🎞️ Concatenando escenas en: {output_file}")
+    print(f"\n[INFO] Concatenando escenas en: {output_file}")
 
     cmd = [
         "ffmpeg", "-y", "-f", "concat", "-safe", "0",
@@ -91,9 +91,9 @@ def merge_scenes(quality: str = "med") -> None:
         concat_file.unlink()
 
     if result.returncode == 0:
-        print(f"✨ ¡Video final generado con éxito!: {output_file}")
+        print(f"[OK] Video final generado en: {output_file}")
     else:
-        print("❌ Error al unir los videos con ffmpeg.")
+        print("[ERROR] Error al unir los videos con ffmpeg.")
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Orquestador de Manim para MAT1188-EID Grupo 9")

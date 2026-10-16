@@ -1,108 +1,73 @@
 # MAT1188 – Cálculo Intermedio: Proyecto Manim (EID)
 
-## Grupo 9 – Eje 9: Teorema Fundamental del Cálculo (Parte II) y Regla de Barrow
+**Grupo 9 – Eje 9:** Teorema Fundamental del Cálculo (Parte II) y Regla de Barrow  
 **Pregunta Central:** *¿Por qué una integral definida puede calcularse como $F(b) - F(a)$?*
 
----
+## Estructura del Proyecto
 
-## Contenido del Repositorio
+- `Documentacion_matematica.md`: Desarrollo matemático, deducción de la Regla de Barrow a partir de la función de acumulación $G(x')$, justificación de la cancelación de la constante $C$ y guion de las escenas.
+- `pyproject.toml`: Configuración del proyecto y dependencias gestionadas con `uv`.
+- `main.py`: Script de línea de comandos para renderizar escenas individuales, procesar todas las escenas en lote y concatenar el video final con `ffmpeg`.
+- `src/common/`:
+  - `style.py`: Paleta de colores, tamaños de fuente y funciones auxiliares de formato.
+  - `math_defs.py`: Funciones matemáticas ($f(x)=3x^2$, $F(x)=x^3$, función de acumulación $G(x')$ y sumas de Riemann).
+- `src/scenes/`: Implementación de las 5 escenas en Manim Community:
+  1. `scene1_riemann_motivation.py`: Sumas de Riemann y refinamiento de la partición ($n=4, 8, 32$).
+  2. `scene2_accumulation_tfc1.py`: Función de acumulación $G(x')$, diferencial de área $\Delta x$ y relación $\frac{dG}{dx'} = f(x')$.
+  3. `scene3_antiderivative_theory.py`: Definición de antiderivada y familia de primitivas $F(x') = G(x') + C$.
+  4. `scene4_barrow_deduction.py`: Deducción de la Regla de Barrow evaluando en $a$ y $b$, y cancelación de la constante $C$.
+  5. `scene5_example_calculation.py`: Ejemplo práctico con $f(x) = 3x^2$ en $[1, 2]$ y verificación numérica.
 
-- `Documentacion_matematica.md`: Fundamentación matemática rigurosa, deducción paso a paso de la Regla de Barrow a partir de la función de acumulación $G(x')$, justificación de la cancelación de la constante $C$ y especificaciones técnicas de animación.
-- `pyproject.toml`: Configuración, metadatos y dependencias gestionadas mediante `uv`.
-- `main.py`: CLI orquestador integral para renderizar escenas individuales, compilar todas las escenas y ensamblar el video final unificado (`ffmpeg`).
-- `src/common/`: 
-  - `style.py`: Paleta cromática estandarizada, tamaños tipográficos y funciones auxiliares de diseño.
-  - `math_defs.py`: Definiciones analíticas de $f(x)=3x^2$, primitiva $F(x)=x^3$, función de acumulación $G(x')$ y sumas de Riemann.
-- `src/scenes/`: Código modular de las 5 escenas de animación en Manim Community:
-  1. `scene1_riemann_motivation.py`: Motivación geométrica y refinamiento de sumas de Riemann ($n=4 \to 8 \to 32$).
-  2. `scene2_accumulation_tfc1.py`: Función de acumulación $G(x')$, franja diferencial $\Delta x$ y deducción de $\frac{dG}{dx'} = f(x')$.
-  3. `scene3_antiderivative_theory.py`: Definición formal de antiderivada, rol de la constante $C$ y familia de primitivas $F(x') = G(x') + C$.
-  4. `scene4_barrow_deduction.py`: Deducción analítica de Barrow evaluando en $a$ y $b$, cancelación algebraica de $C$ y respuesta explícita a la pregunta central.
-  5. `scene5_example_calculation.py`: Ejemplo resuelto con $f(x) = 3x^2$ en $[1, 2]$, área $= 7$, verificación de invariancia ante $C$ y síntesis.
+## Requisitos
 
----
+- **Python:** 3.10 o superior
+- **uv:** Gestor de paquetes y entornos virtuales de Python
+- **Manim Community:** 0.18.0 o superior
+- **FFmpeg:** Para la codificación y unión de los archivos de video
+- **LaTeX:** Distribución con soporte para `amsmath`, `mathtools` y `dvisvgm`
 
-## Requisitos y Entorno de Ejecución
+## Instalación
 
-- **uv:** Gestor de paquetes y entornos de Python ultrarrápido.
-- **Python:** 3.10 o superior (el entorno virtual gestionado por `uv` utiliza CPython 3.13 / 3.14).
-- **Manim Community:** Versión 0.18.0 o superior (instalado Manim CE 0.22.0).
-- **FFmpeg:** Requerido para la codificación y ensamblado final de los videos MP4.
-- **LaTeX / TinyTeX:** Motor tipográfico con soporte de `amsmath`, `mathtools` y `dvisvgm` para el renderizado vectorial de fórmulas matemáticas.
+1. Instalar dependencias del sistema (`ffmpeg` y `latex`):
 
----
+   En Debian / Ubuntu:
+   ```bash
+   sudo apt update
+   sudo apt install ffmpeg texlive texlive-latex-extra texlive-fonts-extra texlive-science dvisvgm
+   ```
 
-## Instalación y Configuración Inicial
+   En Arch Linux:
+   ```bash
+   sudo pacman -S ffmpeg texlive-basic texlive-latexextra texlive-fontsrecommended
+   ```
 
-### 1. Dependencias del Sistema
+2. Sincronizar el entorno virtual e instalar paquetes de Python:
+   ```bash
+   uv sync
+   ```
 
-Antes de ejecutar las animaciones, asegúrate de tener instalados **FFmpeg** y un entorno **LaTeX** compatible con `dvisvgm`:
+## Uso
 
-- **Debian / Ubuntu / Pop!_OS:**
-  ```bash
-  sudo apt update
-  sudo apt install ffmpeg texlive texlive-latex-extra texlive-fonts-extra texlive-science dvisvgm
-  ```
-
-- **Arch Linux:**
-  ```bash
-  sudo pacman -S ffmpeg texlive-basic texlive-latexextra texlive-fontsrecommended
-  ```
-
-### 2. Instalación de `uv` (si no lo tienes instalado)
-
-```bash
-# En Linux:
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
-
-### 3. Sincronización del Entorno y Dependencias
-
-Clona el repositorio e instala las dependencias de Python (`manim`, `numpy`) sincronizando el entorno virtual:
+El archivo `main.py` centraliza la ejecución de Manim:
 
 ```bash
-# Clonar y entrar al proyecto
-cd MAT1188-EID
-
-# Crear entorno virtual e instalar dependencias automáticamente
-uv sync
-```
-
----
-
-## Comandos de Ejecución y Renderizado
-
-El script `main.py` permite orquestar de forma sencilla todo el ciclo de renderizado:
-
-### 1. Renderizado individual de escenas
-```bash
-# Renderizar escena específica en calidad media (720p, 30fps por defecto)
+# Renderizar una escena específica (calidad media 720p30 por defecto)
 uv run python main.py --scene 1
-uv run python main.py --scene 4
 
-# Renderizar en baja resolución para previsualización rápida (480p, 15fps)
+# Cambiar calidad de renderizado: low (480p15), med (720p30), high (1080p60)
 uv run python main.py --scene 2 -q low
-
-# Renderizar en alta definición (1080p, 60fps)
 uv run python main.py --scene 5 -q high
-```
 
-### 2. Renderizado de todas las escenas en lote
-```bash
-# Renderiza secuencialmente las 5 escenas del proyecto en 720p
+# Renderizar las 5 escenas en orden
 uv run python main.py --all -q med
-```
 
-### 3. Compilación del video final unificado
-```bash
-# Concatena automáticamente los 5 clips generados en un único archivo MP4
+# Unir las escenas ya renderizadas en un único archivo MP4
 uv run python main.py --merge -q med
 ```
-El archivo resultante se generará en la raíz del proyecto como `MAT1188_Grupo9_EID_Completo_med.mp4`.
 
----
+El video compilado se guarda en la raíz del proyecto bajo el nombre `MAT1188_Grupo9_EID_Completo_<calidad>.mp4`.
 
-## Fuentes y Bibliografía
+## Referencias
 
 1. **Documentación Oficial de Manim Community:** [https://docs.manim.community/](https://docs.manim.community/)
 2. **Apunte de Cátedra MAT1188:** *Introducción a la integral – Apunte base común*, Facultad de Ingeniería.
